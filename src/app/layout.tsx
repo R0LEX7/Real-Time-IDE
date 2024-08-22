@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/themeProvider";
+import { cn } from "@/lib/utils";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,13 +19,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={cn( "min-h-screen w-full ",inter.className ,  { "debug-screens": process.env.NODE_ENV === "development" })}>
         <ThemeProvider
         attribute="class"
-        defaultTheme="system"
+        defaultTheme="dark"
         enableSystem
         disableTransitionOnChange
         >
+          <Toaster
+          position="top-right"
+          toastOptions={{
+
+            style: {
+              border: '2px solid #312F2D',
+              color : "black"
+            }}}
+          />
 
         {children}
         </ThemeProvider>
