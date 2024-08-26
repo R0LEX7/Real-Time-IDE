@@ -1,22 +1,27 @@
-import React from 'react'
+"use client"
+
+import React, { useEffect } from 'react'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from './ui/button'
+import { useCodeStore } from '@/store/store'
 
 
 type Props = {}
 
 export default function Output({}: Props) {
+
+  const output = useCodeStore((state => state.output))
+
+  useEffect(() => {
+    console.log("output from output", output)
+  }, [output])
+
   return (
     <div className='p-2'>
       <Button variant={'outline'}>Output</Button>
-    <ScrollArea>
-  Jokester began sneaking into the castle in the middle of the night and leaving
-  jokes all over the place: under the king's pillow, in his soup, even in the
-  royal toilet. The king was furious, but he couldn't seem to stop Jokester. And
-  then, one day, the people of the kingdom discovered that the jokes left by
-  Jokester were so funny that they couldn't help but laugh. And once they
-  started laughing, they couldn't stop.
-</ScrollArea>
+      <ScrollArea className='text-base p-3'>
+        {output && output}
+      </ScrollArea>
     </div>
   )
 }

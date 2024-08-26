@@ -5,6 +5,11 @@ import Editor from '@monaco-editor/react';
 import CodeBar from './CodeBar';
 import { useTheme } from 'next-themes';
 import { useCodeStore } from '@/store/store';
+import { executeCode as runCode} from "@/api/codeRunner"
+import toast from 'react-hot-toast';
+
+
+
 
 type Props = {}
 
@@ -16,16 +21,40 @@ export default function CodeEditor({}: Props) {
 
   const theme = typeof window !== 'undefined' ? localStorage.getItem("theme") : null;
   const language = useCodeStore((state => state.language));
+  const setLoading = useCodeStore((state => state.setLoading));
+  const changeOutput  =  useCodeStore((state => state.changeOutput))
 
   useEffect(() => {
     if (theme !== null) {
       handleTheme(theme);
     }
+
   }, [theme]);
 
-  const handleEditorChange = (value: string | undefined) => {
+  const handleEditorChange = async (value: string | undefined) => {
     setCode(value || "");
+
+
   };
+
+
+
+  const executeCode = async () => {
+      console.log("code lang " , language)
+    setLoading(true)
+    try {
+      const output = await runCode(code ,language );
+      console.log("result from runcode" , output)
+      changeOutput(output)
+    } catch (error : any ) {
+      toast.error(error.message)
+    } finally{
+      setLoading(false)
+    }
+
+
+
+  }
 
   const handleTheme = (theme: string) => {
     const mode = theme === "dark" ? "vs-dark" : "light";
@@ -36,13 +65,16 @@ export default function CodeEditor({}: Props) {
     }
   };
 
+
+
   return (
     <div className='w-full h-full mt-3'>
-      <CodeBar handleTheme={handleTheme} theme={theme || 'light'} />
+      <CodeBar handleTheme={handleTheme} theme={theme || 'light'}  executeCode={executeCode} setCode = {setCode}/>
       <Editor
         height="100%"
         width="100%"
-        language={language}
+
+        language={language.id}
         theme={mode}
         value={code}
         onChange={handleEditorChange}

@@ -9,37 +9,32 @@ import { BsMoonStars, BsSun } from "react-icons/bs";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { VscRunAll } from "react-icons/vsc";
-import { GoTrash } from "react-icons/go";
+
 import { useCodeStore } from '@/store/store';
 import toast from 'react-hot-toast';
+import { languages } from '@/constant';
+import { AiOutlineReload } from "react-icons/ai";
+import { ClearModal } from './ClearModal';
 
-const languages: { language: string; id: string }[] = [
-  { language: "C", id: "c" },
-  { language: "C++", id: "cpp" },
-  { language: "C#", id: "csharp" },
-  { language: "CSS", id: "css" },
-  { language: "Go", id: "go" },
-  { language: "HTML", id: "html" },
-  { language: "Java", id: "java" },
-  { language: "Javascript", id: "javascript" },
-  { language: "Kotlin", id: "kotlin" },
-  { language: "Python", id: "python" },
-  { language: "TypeScript", id: "typescript" },
-];
+
+
 
 type Props = {
   handleTheme: (theme: string) => void;
   theme: string;
+  executeCode : () => void
+  setCode : (code : string) => void
 };
 
-export default function CodeBar({ handleTheme, theme }: Props) {
+export default function CodeBar({ handleTheme, theme , executeCode  ,setCode }: Props) {
   const setLanguage = useCodeStore((state) => state.changeLanguage);
   const language = useCodeStore((state) => state.language);
+  const isLoading = useCodeStore((state) => state.loading);
 
-  const handleLanguageChange = (lang: string) => {
-    const selectedLanguage = languages.find(l => l.language === lang)?.id || "javascript";
-    setLanguage(selectedLanguage);
-    toast.success(`${selectedLanguage} Selected`);
+  const handleLanguageChange = (lang: { language: string; id: string; version: string }) => {
+
+    setLanguage(lang);
+    toast.success(`${lang.language} Selected`);
   };
 
 
@@ -48,11 +43,11 @@ export default function CodeBar({ handleTheme, theme }: Props) {
     <div className="mb-3 flex justify-center gap-4">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline">{language}</Button>
+          <Button variant="outline" className='capitalize'>{language.language}</Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent  className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
           {languages.map((language) => (
-            <DropdownMenuItem key={language.id} onClick={() => handleLanguageChange(language.language)}>
+            <DropdownMenuItem key={language.id} onClick={() => handleLanguageChange(language)}>
               {language.language}
             </DropdownMenuItem>
           ))}
@@ -65,13 +60,15 @@ export default function CodeBar({ handleTheme, theme }: Props) {
         <span className="sr-only">Toggle theme</span>
       </Button>
 
-      <Button variant="secondary">
+      <Button variant="secondary" onClick={executeCode} disabled ={isLoading}>
+        {isLoading && (
+          <AiOutlineReload className="mr-2 h-4 w-4 animate-spin" />
+        )}
+
         Run <VscRunAll className="ml-2 h-4 w-4" />
       </Button>
+      <ClearModal setCode={setCode}/>
 
-      <Button variant="destructive">
-        Clear <GoTrash className="ml-2 h-4 w-4" />
-      </Button>
     </div>
   );
 }
