@@ -54,7 +54,7 @@ export default function Room({isCreated}: Props) {
             return;
 
         }
-            router.push(`/room/${roomId}`)
+            router.push(`/room/${roomId}/?username=${username}` )
 
     }
 

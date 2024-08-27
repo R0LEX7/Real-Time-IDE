@@ -15,3 +15,22 @@ export const languages: { language: string; id: string; version: string }[] = [
   { language: "Swift", id: "swift", version: "5.3.3" },
   { language: "TypeScript", id: "typescript", version: "5.0.3" },
 ];
+
+interface IActions {
+  JOIN: string
+  JOINED: string
+  DISCONNECTED: string
+  CODE_CHANGE: string
+  SYNC_CODE: string
+  LEAVE: string
+}
+
+
+export const ACTIONS : IActions = {
+  JOIN: 'join',
+  JOINED: 'joined',
+  DISCONNECTED: 'disconnected',
+  CODE_CHANGE: 'code-change',
+  SYNC_CODE: 'sync-code',
+  LEAVE: 'leave',
+};

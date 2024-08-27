@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useState } from 'react'
+import { Socket } from "socket.io-client";
+import React, { useEffect, useState } from 'react'
 import {
     Card,
     CardContent,
@@ -12,21 +13,39 @@ import {
 
 import { Button } from "@/components/ui/button"
 import Avatar from 'react-avatar'
+import { useSearchParams , useParams } from 'next/navigation'
+import { ACTIONS } from "@/constant";
 
-type Props = {}
+type Props = {
+
+        socket: Socket;
+
+}
 
 interface IMember {
     socketId: string | number
     username: string
 }
 
-export default function Sidebar({}: Props) {
-    const [members, setMembers] = useState<IMember[]>([
-        { socketId: 1, username: "Rakesh Sharma" },
-        { socketId: 2, username: "Prakash" },
+export default function Sidebar({socket} : Props) {
+    const [members, setMembers] = useState<IMember[]>([])
 
-        // Add more members as needed
-    ])
+    const searchParams = useSearchParams()
+    const {roomId} = useParams()
+    const username = searchParams.get('username')
+
+
+    useEffect(() => {
+        socket.emit(ACTIONS.JOIN , {username , roomId} )
+        socket.on(ACTIONS.JOINED , ({allClients , username , socketId}) => {
+            console.log("user connected" , username , allClients)
+
+            setMembers(allClients)
+        })
+
+    },[])
+
+    console.log("members" , members)
 
     return (
         <Card className='w-[200px] h-screen flex flex-col'>
@@ -37,7 +56,7 @@ export default function Sidebar({}: Props) {
                 </CardHeader>
 
                 <CardContent className='flex flex-wrap justify-center gap-2 overflow-y-auto max-h-[calc(100vh-340px)]'>
-                    {members && members.map((member) => (
+                    {members && members.length > 0 && members.map((member) => (
                         <MemberComp key={member.socketId} member={member} />
                     ))}
                 </CardContent>
