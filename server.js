@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
 import { ACTIONS } from "./actions.js";
+import { socket } from "@/socket.js";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -11,7 +12,7 @@ const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
 const userSocketMap = {};
-function getAllConnectedClients(roomId , io) {
+function getAllConnectedClients(roomId, io) {
   // Map
   return Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(
     (socketId) => {
@@ -37,17 +38,38 @@ app.prepare().then(() => {
       console.log("Received value from client: ", username);
       userSocketMap[socket.id] = username;
       socket.join(roomId);
-      const allClients = getAllConnectedClients(roomId , io);
+      const allClients = getAllConnectedClients(roomId, io);
 
       allClients.forEach(({ socketId }) => {
-        socket.to(socketId).emit(ACTIONS.JOINED, {
+        io.to(socketId).emit(ACTIONS.JOINED, {
           allClients,
           username,
           socketId: socket.id,
         });
       });
     });
+
+    socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
+      socket.in(roomId).emit(ACTIONS.CODE_CHANGE, { code });
+    });
+
+    socket.on(ACTIONS.SYNC_CODE, ({ socketId, code }) => {
+      io.to(socketId).emit(ACTIONS.SYNC_CODE, code);
+    });
   });
+
+  socket.on("disconnection", () => {
+    const rooms = [...socket.rooms];
+    rooms.forEach((roomId) => {
+      socket.in(roomId).emit(ACTIONS.DISCONNECTED, {
+        socketId: socket.id,
+        username: userSocketMap[socket.id],
+      });
+    });
+    delete userSocketMap[socket.id];
+    socket.leave();
+  });
+
 
   httpServer
     .once("error", (err) => {
