@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button"
 import Avatar from 'react-avatar'
 import { useSearchParams , useParams } from 'next/navigation'
 import { ACTIONS } from "@/constant";
+import toast from "react-hot-toast";
 
 type Props = {
 
@@ -39,9 +40,18 @@ export default function Sidebar({socket} : Props) {
         socket.emit(ACTIONS.JOIN , {username , roomId} )
         socket.on(ACTIONS.JOINED , ({allClients , username , socketId}) => {
             console.log("user connected" , username , allClients)
-
+            toast.success(`${username} joined the room`)
             setMembers(allClients)
         })
+
+    // Listening for disconnect
+    socket.on(ACTIONS.DISCONNECTED , ({socketId , username}) => {
+        toast.success(`${username} left the room`)
+        setMembers((prev) => {
+            return prev.filter((client) => client.socketId !== socketId)
+
+        })
+    })
 
     },[])
 
@@ -77,7 +87,7 @@ interface IMemberProp {
 const MemberComp = ({ member }: IMemberProp) => {
     return (
         <div className='flex flex-col justify-center items-center'>
-            <Avatar name={member?.username} round="50px" size={50} />
+            <Avatar name={member?.username} round="50px" size={"50"} />
             <p className='text-xs'>{member?.username}</p>
         </div>
     )
