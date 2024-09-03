@@ -39,7 +39,7 @@ export default function Sidebar({socket} : Props) {
     useEffect(() => {
         socket.emit(ACTIONS.JOIN , {username , roomId} )
         socket.on(ACTIONS.JOINED , ({allClients , username , socketId}) => {
-            console.log("user connected" , username , allClients)
+
             toast.success(`${username} joined the room`)
             setMembers(allClients)
         })
@@ -55,7 +55,7 @@ export default function Sidebar({socket} : Props) {
 
     },[])
 
-    console.log("members" , members)
+
 
     return (
         <Card className='w-[200px] h-screen flex flex-col'>

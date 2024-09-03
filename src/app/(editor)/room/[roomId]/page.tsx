@@ -63,7 +63,7 @@ export default function page({}: Props) {
       <Sidebar socket={socket}/>
 
       <ResizablePanelGroup direction="vertical">
-  <ResizablePanel defaultSize={75}><CodeEditor/></ResizablePanel>
+  <ResizablePanel defaultSize={75}><CodeEditor socket={socket}/></ResizablePanel>
   <ResizableHandle />
   <ResizablePanel><Output/></ResizablePanel>
 </ResizablePanelGroup>

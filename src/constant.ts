@@ -23,6 +23,7 @@ interface IActions {
   CODE_CHANGE: string
   SYNC_CODE: string
   LEAVE: string
+  RUN : string
 }
 
 
@@ -33,4 +34,5 @@ export const ACTIONS : IActions = {
   CODE_CHANGE: 'code-change',
   SYNC_CODE: 'sync-code',
   LEAVE: 'leave',
+  RUN : "run"
 };

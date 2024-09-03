@@ -49,13 +49,17 @@ app.prepare().then(() => {
       });
     });
 
-    socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
-      socket.in(roomId).emit(ACTIONS.CODE_CHANGE, { code });
+    socket.on(ACTIONS.CODE_CHANGE, ({ roomId, value }) => {
+      socket.in(roomId).emit(ACTIONS.CODE_CHANGE, { value });
     });
 
     socket.on(ACTIONS.SYNC_CODE, ({ socketId, code }) => {
       io.to(socketId).emit(ACTIONS.SYNC_CODE, code);
     });
+
+    socket.on(ACTIONS.RUN , ({roomId , output}) =>{
+      socket.in(roomId).emit(ACTIONS.RUN , {output})
+    } )
 
     socket.on("disconnecting", () => {
       console.log("disconnecting.....");
