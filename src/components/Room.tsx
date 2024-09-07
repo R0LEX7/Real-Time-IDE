@@ -17,6 +17,7 @@ import Link from 'next/link'
 import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast'
 import useIsDesktop from '@/hooks/useIsDesktop'
+import MobileView from './MobileView'
 
 
 type Props = {
@@ -40,12 +41,7 @@ export default function Room({isCreated}: Props) {
 
     const  IsDesktop = useIsDesktop()
 
-  useEffect(() => {
-    if(!IsDesktop){
-        router.push("/mobile_block")
-    }
 
-  }, [IsDesktop]);
 
     useEffect(() => {
         if(!isCreated){
@@ -80,9 +76,9 @@ export default function Room({isCreated}: Props) {
 
   return (
     <div className='flex justify-center flex-col items-center w-full h-screen'>
-        <Card className="w-[350px]">
+        {IsDesktop ? (<Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>{isCreated ? "Create Room" : "Join Room"}</CardTitle>
+        <CardTitle>{!isCreated ? "Create Room" : "Join Room"}</CardTitle>
         <CardDescription>{!isCreated ? "Have an invite? join a" : "If you don`t have an invite then create a"} <Link href={!isCreated ?"/" : "/create_room"} className='underline'>room</Link></CardDescription>
       </CardHeader>
       <CardContent>
@@ -114,7 +110,7 @@ export default function Room({isCreated}: Props) {
         <Button onClick={handleClick}  onKeyUp={handleKeyEnter}>{ isCreated ?"Join Room" : "Create Room"}</Button>
       </CardFooter>
 
-    </Card>
+    </Card>) : (<MobileView/>)}
     </div>
   )
 }

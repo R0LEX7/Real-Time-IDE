@@ -28,7 +28,7 @@ interface IMember {
     username: string
 }
 
-export default function Sidebar({socket} : Props) {
+function Sidebar ({socket} : Props) {
 
     const [members, setMembers] = useState<IMember[]>([])
     const router = useRouter()
@@ -104,6 +104,8 @@ export default function Sidebar({socket} : Props) {
         </Card>
     )
 }
+
+export default React.memo(Sidebar);
 
 interface IMemberProp {
     member: IMember

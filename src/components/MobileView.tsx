@@ -9,23 +9,12 @@ type Props = {}
 
 export default function MobileView({}: Props) {
 
-    const router = useRouter()
-
-    const  IsDesktop = useIsDesktop()
-
-  useEffect(() => {
-    if(IsDesktop){
-        router.push("/")
-    }
-
-  }, [IsDesktop]);
-
   return (
     <div className='w-full h-full flex  items-center flex-col '>
     <Lottie
         animationData={desktopAnimation}
         loop={true} // Set to true if you want it to loop
-        style={{ height: 400, width: 600  , marginTop : 100}} // Adjust the size as needed
+        style={{ height: 300, width: 600  , marginTop : 100}} // Adjust the size as needed
       />
       <h3>Switch to Desktop for IDE</h3>
 

@@ -12,9 +12,9 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+
 import useIsDesktop from "@/hooks/useIsDesktop";
+import MobileView from "@/components/MobileView";
 
 
 
@@ -57,21 +57,18 @@ export default function page({}: Props) {
     socket.emit("hello", "world");
   }
 
-  const router = useRouter()
+
 
   const  IsDesktop = useIsDesktop()
 
-  useEffect(() => {
-    if(!IsDesktop){
-        router.push("/mobile_block")
-    }
 
-  }, [IsDesktop]);
 
 
 
   return (
-    <div className='flex gap-3 h-screen'>
+   <>
+    {IsDesktop ? (
+      <div className='flex gap-3 h-screen'>
 
       <Sidebar socket={socket}/>
 
@@ -81,6 +78,9 @@ export default function page({}: Props) {
   <ResizablePanel><Output/></ResizablePanel>
 </ResizablePanelGroup>
       </div>
+    ) : (<MobileView/>)}
+
+   </>
 
   )
 }
