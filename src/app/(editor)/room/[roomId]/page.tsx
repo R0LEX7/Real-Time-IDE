@@ -13,6 +13,8 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import useIsDesktop from "@/hooks/useIsDesktop";
 
 
 
@@ -54,6 +56,17 @@ export default function page({}: Props) {
   function  emitMsg  (){
     socket.emit("hello", "world");
   }
+
+  const router = useRouter()
+
+  const  IsDesktop = useIsDesktop()
+
+  useEffect(() => {
+    if(!IsDesktop){
+        router.push("/mobile_block")
+    }
+
+  }, [IsDesktop]);
 
 
 
