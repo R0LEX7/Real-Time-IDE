@@ -7,7 +7,7 @@ import useIsDesktop from '@/hooks/useIsDesktop';
 
 type Props = {}
 
-export default function ({}: Props) {
+export default function MobileView({}: Props) {
 
     const router = useRouter()
 
@@ -15,7 +15,7 @@ export default function ({}: Props) {
 
   useEffect(() => {
     if(IsDesktop){
-        router.back()
+        router.push("/")
     }
 
   }, [IsDesktop]);

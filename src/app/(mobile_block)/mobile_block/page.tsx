@@ -1,4 +1,4 @@
-import Mobileview from '@/components/Mobileview'
+import MobileView from '@/components/MobileView'
 import React from 'react'
 
 
@@ -7,6 +7,6 @@ type Props = {}
 export default function page({}: Props) {
 
   return (
-    <div><Mobileview/></div>
+    <div><MobileView/></div>
   )
 }

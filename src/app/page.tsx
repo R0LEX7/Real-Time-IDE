@@ -4,7 +4,7 @@ import Room from "@/components/Room";
 
 
 
-export default function Home() {
+export default function page() {
 
 
   return (
