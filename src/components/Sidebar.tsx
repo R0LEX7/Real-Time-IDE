@@ -13,7 +13,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import Avatar from 'react-avatar'
-import { useSearchParams , useParams } from 'next/navigation'
+import { useSearchParams , useParams , useRouter } from 'next/navigation'
 import { ACTIONS } from "@/constant";
 import toast from "react-hot-toast";
 
@@ -29,11 +29,36 @@ interface IMember {
 }
 
 export default function Sidebar({socket} : Props) {
-    const [members, setMembers] = useState<IMember[]>([])
 
+    const [members, setMembers] = useState<IMember[]>([])
+    const router = useRouter()
     const searchParams = useSearchParams()
     const {roomId} = useParams()
     const username = searchParams.get('username')
+
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(String(roomId)).then(
+          () => {
+            console.log("Text copied to clipboard");
+            toast.success("Copied to clipboard!");
+          },
+          (err) => {
+            toast.error("Could not copy text: ", err);
+          }
+        );
+      };
+
+      function leaveRoom() {
+          window.location.replace("/")
+          router.replace('/');
+
+        socket.on(ACTIONS.DISCONNECTED , ({socketId , username}) => {
+            toast.success(`${username} left the room`)
+            setMembers((prev) => {
+                return prev.filter((client) => client.socketId !== socketId)
+
+            })})
+    }
 
 
     useEffect(() => {
@@ -73,8 +98,8 @@ export default function Sidebar({socket} : Props) {
             </div>
 
             <CardFooter className="flex flex-col gap-2 p-4">
-                <Button variant="outline" className='w-full'>Copy Room Id</Button>
-                <Button className='w-full'>Leave Room</Button>
+                <Button variant="outline" className='w-full' onClick={copyToClipboard} >Copy Room Id</Button>
+                <Button className='w-full' onClick={leaveRoom}>Leave Room</Button>
             </CardFooter>
         </Card>
     )
